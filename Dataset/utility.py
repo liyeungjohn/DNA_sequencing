@@ -5,14 +5,15 @@ def parse_input(file1):
 	f = open(file1, 'r')
 	read = f.readline()
 	while read != "":
-		reads.append(read)
+		if read not in reads:
+			reads.append(read)
 		read = f.readline()
 	f.close()
 	return reads
 
 def write_output(output, file2):
 	f = open(file2, 'w')
-	f.write(output)
+	f.write(output + "\n")
 	f.close()
 
 def check(file1, file2):
@@ -81,3 +82,6 @@ class Edge(object):
 	#first_node, second_node, overlap, overlap_string
 	def __init__(self, node1, node2):
 		self.first_node, self.second_node, self.overlap, self.overlap_string = Node.cal_overlap(node1, node2)
+
+#node1, node2, overlap, overlap_string = Node.cal_overlap(Node("TGCCTCGAACTTTCCCGTACCACAG"), Node("TGCCTCGAACTTTCCCGTACCACAGGATTCACGTT"))
+#print node1.read + "\n" + node2.read + "\n" + str(overlap) + "\n" + overlap_string
