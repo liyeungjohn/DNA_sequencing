@@ -5,7 +5,12 @@ def parse_input(file1):
 	f = open(file1, 'r')
 	read = f.readline()
 	while read != "":
-		if read not in reads:
+		read = read.replace("\n", "")
+		good = True
+		for old_read in reads:
+			if old_read in read:
+				reads.remove(old_read)			
+		if good:
 			reads.append(read)
 		read = f.readline()
 	f.close()
@@ -28,7 +33,7 @@ def files_are_the_same(file1, file2):
     return md5sum(file1) == md5sum(file2)
 
 def make_file_name(file1):
-	return "john_" + file1
+	return "output" + file1.split("reads")[1]
 
 def md5sum(filename, block_size=2**20):
     f = open(filename, "rb")

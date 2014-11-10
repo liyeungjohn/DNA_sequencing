@@ -16,7 +16,7 @@ class solver(object):
 
 	def generate_graph(self):
 		for read in self.reads:
-			node = Node(read[:-1])
+			node = Node(read)
 			self.nodes.append(node)
 			#print len(node.read)
 		for index1 in range(len(self.nodes)):
@@ -25,8 +25,8 @@ class solver(object):
 					edge = Edge(self.nodes[index1], self.nodes[index2])
 					self.edges.append(edge)
 		sorted(self.edges, key=lambda edge: edge.overlap, reverse=True)
-		for edge in self.edges:
-			print "first: " + edge.first_node.read + " second: " + edge.second_node.read + " overlap: " + str(edge.overlap) + " str:" + edge.overlap_string
+		#for edge in self.edges:
+			#print "first: " + edge.first_node.read + " second: " + edge.second_node.read + " overlap: " + str(edge.overlap) + " str:" + edge.overlap_string
 
 	def solve(self):
 		edge_index = 0
@@ -69,6 +69,10 @@ class solver(object):
 				self.nodes_cc[first_cc_index].append(second_node)
 				self.edges_cc[first_cc_index].append(curr_edge)
 				self.nodes_picked += 1
+			if first_cc_index == -1 and second_cc_index != -1:
+				self.nodes_cc[second_cc_index].insert(0, first_node)
+				self.edges_cc[second_cc_index].insert(0, curr_edge)
+				self.nodes_picked += 1
 			if first_cc_index == -1 and second_cc_index == -1:
 				self.nodes_cc.append([first_node, second_node])
 				self.edges_cc.append([curr_edge])
@@ -77,11 +81,15 @@ class solver(object):
 	def generate_sequence(self):
 		if len(self.edges_cc) > 1:
 			print "shit more than 1 cc!"
-		#print self.edges_cc
-		self.sequence = self.edges_cc[0][0].first_node.read
-		for edge in self.edges_cc[0]:
-			to_add = edge.second_node.read[edge.overlap:]
-			self.sequence += to_add
+		cc_index = 0
+		self.sequence = ""
+		for edge_cc in self.edges_cc:
+			cur_sequence = self.edges_cc[cc_index][0].first_node.read
+			for edge in self.edges_cc[cc_index]:
+				to_add = edge.second_node.read[edge.overlap:]
+				cur_sequence += to_add
+			self.sequence += cur_sequence
+
 
 	def main(self):
 		self.generate_graph()
