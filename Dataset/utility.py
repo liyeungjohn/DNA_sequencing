@@ -81,4 +81,3 @@ class Edge(object):
 	#first_node, second_node, overlap, overlap_string
 	def __init__(self, node1, node2):
 		self.first_node, self.second_node, self.overlap, self.overlap_string = Node.cal_overlap(node1, node2)
-
