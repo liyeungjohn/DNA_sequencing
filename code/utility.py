@@ -1,5 +1,4 @@
 import hashlib, sys
-
 def parse_input(file1):
 	reads = []
 	f = open(file1, 'r')
@@ -13,6 +12,7 @@ def parse_input(file1):
 		if good:
 			reads.append(read)
 		read = f.readline()
+
 	f.close()
 	return reads
 
