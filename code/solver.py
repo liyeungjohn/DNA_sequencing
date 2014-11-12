@@ -25,8 +25,8 @@ class solver(object):
 			edge_index += 1
 			first = curr_edge.first
 			second = curr_edge.second
-			if first == "GGGAAAGGGTGGATCCATATTGACACTC" and second == "ATTGACACTCCGCTATCGCCAGTGTCCGAATTTTTTTCC":
-				logging.debug("yay")
+			#if first == "GGGAAAGGGTGGATCCATATTGACACTC" and second == "ATTGACACTCCGCTATCGCCAGTGTCCGAATTTTTTTCC":
+				#logging.debug("yay")
 			first_cc_index = -1
 			second_cc_index = -1
 			bad = False 
@@ -72,8 +72,8 @@ class solver(object):
 			self.edges_picked += 1
 
 	def generate_sequence(self):
-		if len(self.edges_cc) > 1:
-			logging.debug("shit more than 1 cc!")
+		#if len(self.edges_cc) > 1:
+			#logging.debug("shit more than 1 cc!")
 
 		#shrink multiple cc into 1
 		result_edges = []
@@ -96,11 +96,11 @@ class solver(object):
 		self.generate_graph()
 		self.solve()
 		self.generate_sequence()
-		self.print_reads()
-		self.print_edges(self.edges)
-		self.print_nodes_cc()
-		self.print_edges_cc()
-		self.print_sequence()
+		#self.print_reads()
+		#self.print_edges(self.edges)
+		#self.print_nodes_cc()
+		#self.print_edges_cc()
+		#self.print_sequence()
 		print self.sequence
 
 	#for debugging:
@@ -134,7 +134,7 @@ class solver(object):
 		logging.debug("sequence: " + self.sequence)
 
 #logging configs
-logging.basicConfig(filename="run.log", level=logging.DEBUG)
+#logging.basicConfig(filename="run.log", level=logging.DEBUG)
 
 #main logic
 if __name__ == "__main__":

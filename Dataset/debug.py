@@ -24,8 +24,8 @@ class TestSolver(unittest.TestCase):
 				if node.read == read:
 					good = True
 			self.assertTrue(good)
-		solver1.print_edges()
-		solver1.print_sequence()
+		#solver1.print_edges()
+		#solver1.print_sequence()
 
 
 if __name__ == "__main__":
