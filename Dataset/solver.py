@@ -1,5 +1,4 @@
 from utility import *
-#from sets import Set
 import sys, argparse, os, logging
 
 class solver(object):
@@ -7,7 +6,7 @@ class solver(object):
 		self.reads = reads
 		self.sequence = ""
 		self.edges = []	#all edges with overlap > 0
-		self.nodes_picked = 0
+		self.edges_picked = 0
 		self.edges_cc = []
 		self.nodes_cc = []
 
@@ -15,24 +14,26 @@ class solver(object):
 		for index1 in range(len(self.reads)):
 			for index2 in range(len(self.reads)):
 				if index2 > index1:
-					edge = Edge(self.reads[index1], self.reads[index2])
+					edge = Edge(self.reads[index1], self.reads[index2], False)
 					self.edges.append(edge)
 		self.edges = sorted(self.edges, key=lambda edge: edge.overlap, reverse=True)
 
 	def solve(self):
 		edge_index = 0
-		while self.nodes_picked < len(self.reads) and edge_index < len(self.edges):
+		while self.edges_picked < (len(self.reads) - 1):
 			curr_edge = self.edges[edge_index]
 			edge_index += 1
 			first = curr_edge.first
 			second = curr_edge.second
+			if first == "GGGAAAGGGTGGATCCATATTGACACTC" and second == "ATTGACACTCCGCTATCGCCAGTGTCCGAATTTTTTTCC":
+				logging.debug("yay")
 			first_cc_index = -1
 			second_cc_index = -1
 			bad = False 
 			cc_index = 0
 			for nodes in self.nodes_cc:
 				if first in nodes:
-					if first == nodes[len(nodes) - 1]:
+					if first == nodes[-1]:
 						first_cc_index = cc_index
 					else:
 						bad = True
@@ -62,44 +63,41 @@ class solver(object):
 			if first_cc_index != -1 and second_cc_index == -1:
 				self.nodes_cc[first_cc_index].append(second)
 				self.edges_cc[first_cc_index].append(curr_edge)
-				self.nodes_picked += 1
 			if first_cc_index == -1 and second_cc_index != -1:
 				self.nodes_cc[second_cc_index].insert(0, first)
 				self.edges_cc[second_cc_index].insert(0, curr_edge)
-				self.nodes_picked += 1
 			if first_cc_index == -1 and second_cc_index == -1:
 				self.nodes_cc.append([first, second])
 				self.edges_cc.append([curr_edge])
-				self.nodes_picked += 2
+			self.edges_picked += 1
 
 	def generate_sequence(self):
 		if len(self.edges_cc) > 1:
 			logging.debug("shit more than 1 cc!")
 
+		#shrink multiple cc into 1
 		result_edges = []
 		for index in range(len(self.edges_cc) - 1):
 			last_edge = self.edges_cc[index][-1]
 			next_edge = self.edges_cc[index + 1][0]
-			new_edge = Edge(last_edge.second, next_edge.first)
+			new_edge = Edge(last_edge.second, next_edge.first, True)
 			result_edges.extend(self.edges_cc[index])
 			result_edges.append(new_edge)
 		result_edges.extend(self.edges_cc[-1])
+		self.print_edges(result_edges)
 
-		cc_index = 0
-		self.sequence = ""
-		for edge_cc in self.edges_cc:
-			cur_sequence = self.edges_cc[cc_index][0].first
-			for edge in self.edges_cc[cc_index]:
-				to_add = edge.second[edge.overlap:]
-				cur_sequence += to_add
-			self.sequence += cur_sequence
+		#shrink list of edges to one sequence
+		self.sequence = result_edges[0].first
+		for edge in result_edges:
+			to_add = edge.second[edge.overlap:]
+			self.sequence += to_add
 
 	def main(self):
 		self.generate_graph()
 		self.solve()
 		self.generate_sequence()
 		self.print_reads()
-		self.print_edges()
+		self.print_edges(self.edges)
 		self.print_nodes_cc()
 		self.print_edges_cc()
 		self.print_sequence()
@@ -111,9 +109,9 @@ class solver(object):
 		for read in self.reads:
 			logging.debug("read: " + read)
 
-	def print_edges(self):
+	def print_edges(self, edges):
 		logging.debug("print_edges")
-		for edge in self.edges:
+		for edge in edges:
 			logging.debug("edge.first: " + edge.first + " 	second: " + edge.second)
 			logging.debug("edge.overlap: " + str(edge.overlap) + "		overlap_string: " + edge.overlap_string)
 

@@ -51,5 +51,10 @@ def cal_overlap_d(read1, read2):
 
 class Edge(object):
 	#first_node, second_node, overlap, overlap_string
-	def __init__(self, first, second):
-		self.first, self.second, self.overlap, self.overlap_string = cal_overlap(first, second)
+	def __init__(self, first, second, directed):
+		if directed:
+			self.first = first
+			self.second = second
+			self.overlap, self.overlap_string = cal_overlap_d(first, second)
+		else:			
+			self.first, self.second, self.overlap, self.overlap_string = cal_overlap(first, second)
